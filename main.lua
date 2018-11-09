@@ -24,6 +24,8 @@ slime.width = 32
 slime.height = 25
 slime.x = 600
 slime.y = 410
+slime.isAlive = true
+slime.isDying = false
 
 function attackSound()
 
@@ -128,19 +130,28 @@ function love.load()
 end
 
 function love.update(dt)
+	-- slime
 	slime.idleFrame = slime.idleFrame + 6 * dt
 	slime.moveFrame = slime.moveFrame + 11 * dt
-	slime.dieFrame = slime.dieFrame + 5 * dt
+	-- player
 	player.idleFrame = player.idleFrame + 6 * dt
 	player.runFrame = player.runFrame + 9 * dt
 	if (slime.idleFrame >= #slime.idleframes + 1) then
 		slime.idleFrame = 1;
 	end
-	if (slime.dieFrame >= #slime.dieframes + 1) then
-		slime.dieFrame = 1;
-	end
 	if (slime.moveFrame >= #slime.moveframes + 1) then
 		slime.moveFrame = 1;
+	end
+	if (love.keyboard.isDown("x") and slime.isAlive) then
+		slime.isAlive = false
+		slime.isDying = true
+	end
+	if (slime.isAlive == false and slime.isDying == true) then
+		slime.dieFrame = slime.dieFrame + 5 * dt
+	end
+	if (slime.dieFrame >= #slime.dieframes + 1) then
+		slime.isDying = false
+		slime.dieFrame = 1;
 	end
 	if (love.keyboard.isDown("space") or player.isAttacking == true) then
 		if (player.isAttacking == false) then
@@ -179,20 +190,25 @@ end
 
 function love.draw()
 	love.graphics.draw(background, 0, 0, 0, 3, 3)
-	local roundedFrame = math.floor(slime.idleFrame)
-	love.graphics.draw(slime.img, slime.idleframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
+	if (slime.isAlive) then
+		local roundedFrame = math.floor(slime.idleFrame)
+		love.graphics.draw(slime.img, slime.idleframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
+	elseif (slime.isDying == true) then
+		local roundedFrame = math.floor(slime.dieFrame)
+		love.graphics.draw(slime.img, slime.dieframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
+	end
 	-- local roundedFrame = math.floor(slime.moveFrame)
 	-- love.graphics.draw(slime.img, slime.moveframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
 	-- local roundedFrame = math.floor(slime.dieFrame)
 	-- love.graphics.draw(slime.img, slime.dieframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
 	if (player.isAttacking == true) then
-		roundedFrame = math.floor(player.attackFrame)
+		local roundedFrame = math.floor(player.attackFrame)
 		love.graphics.draw(player.attack.img[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.attack.width / 2, player.attack.height / 2)
 	elseif (player.isRunning == true) then
-		roundedFrame = math.floor(player.runFrame)
+		local roundedFrame = math.floor(player.runFrame)
 			love.graphics.draw(player.run.img, player.runframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.run.width / 2, player.run.height / 2)
 	else
-		roundedFrame = math.floor(player.idleFrame)
+		local roundedFrame = math.floor(player.idleFrame)
 		love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
 	end
 end
