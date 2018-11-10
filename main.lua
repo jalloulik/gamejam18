@@ -8,8 +8,7 @@ love.graphics.setDefaultFilter("nearest")
 local background = require("background")
 local player = require("player")
 slimes = {}
-
-slimes[1] = require("slime")
+local slimes = require("slime")
 
 RIGHT = 1
 LEFT = -1
@@ -27,26 +26,23 @@ end
 function love.load()
 	love.window.setMode(window.width, window.height)
 	player.init()
-	for i,slime in ipairs(slimes) do
-		slime.init()
-	end
+	slimes.create(600, 410)
+	slimes.create(500, 411)
+	slimes.create(200, 411)
+	slimes.init()
 end
 
 function love.update(dt)
 	-- player
 	player.frameAnimation(dt)
-	for i,slime in ipairs(slimes) do
-		slime.frameAnimation(dt)
-	end
+	slimes.update(dt)
 	-- slime.frameAnimation(dt)
 
 end
 
 function love.draw()
 	background.draw()
-	for i,slime in ipairs(slimes) do
-		slime.draw(d)
-	end
+	slimes.draw()
 	player.draw()
 end
 
