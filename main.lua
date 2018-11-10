@@ -9,6 +9,7 @@ local background = require("background")
 local player = require("player")
 local monsters = require("monsters")
 
+local tools = require("tools")
 require("constants")
 require("window")
 
@@ -21,7 +22,7 @@ end
 function love.update(dt)
 	player.update(dt)
 	monsters.update(dt)
-
+	background.update(dt, player.x, window.width)
 end
 
 function love.draw()

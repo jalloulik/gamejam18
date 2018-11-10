@@ -101,12 +101,37 @@ function player.frameAnimation(dt)
 	end
 end
 
-function player.hurtbox()
+function player.hurtboxdraw()
+	player.hurtbox = {}
+	player.hurtbox.xr = player.x - player.idle.width + 18
+	player.hurtbox.yr = player.y - player.idle.height + 6
+	player.hurtbox.xl = player.x - player.idle.width + 12
+	player.hurtbox.yl = player.y - player.idle.height + 6
+	player.hurtbox.width = (player.idle.width - 14) * 2
+	player.hurtbox.height = (player.idle.height - 8) * 2
+
 	love.graphics.setColor(0, 0, 1, 1)
 	if (player.isFacing == RIGHT) then
-		love.graphics.rectangle("line", player.x - player.idle.width + 18, player.y - player.idle.height + 6, (player.idle.width - 14) * 2, (player.idle.height - 8) * 2)
+		love.graphics.rectangle("line", player.hurtbox.xr, player.hurtbox.yr, player.hurtbox.width, player.hurtbox.height)
 	else
-		love.graphics.rectangle("line", player.x - player.idle.width + 12, player.y - player.idle.height + 6, (player.idle.width - 14) * 2, (player.idle.height - 8) * 2)
+		love.graphics.rectangle("line", player.hurtbox.xl, player.hurtbox.yl, player.hurtbox.width, player.hurtbox.height)
+	end
+	love.graphics.setColor(1, 1, 1, 1)
+end
+
+function player.hitboxdraw()
+	player.hitbox = {}
+
+	player.hitbox.xr = player.x - player.idle.width + 45
+	player.hitbox.yr = player.y - player.idle.height - 4
+	player.hitbox.xl = player.x - player.idle.width - 18
+	player.hitbox.yl = player.y - player.idle.height - 4
+
+	love.graphics.setColor(1, 0, 0, 1)
+	if (player.isFacing == RIGHT) then
+		love.graphics.rectangle("line", player.hitbox.xr, player.hitbox.yr, (player.idle.width - 14) * 2, (player.idle.height - 0) * 2)
+	else
+		love.graphics.rectangle("line", player.hitbox.xl, player.hitbox.yl, (player.idle.width - 14) * 2, (player.idle.height - 0) * 2)
 	end
 	love.graphics.setColor(1, 1, 1, 1)
 end
@@ -122,7 +147,8 @@ function player.draw()
 		local roundedFrame = math.floor(player.idleFrame)
 		love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
 	end
-	player.hurtbox()
+	player.hurtboxdraw()
+	player.hitboxdraw()
 end
 
 return player

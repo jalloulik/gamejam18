@@ -1,5 +1,6 @@
 local monsters = {}
 local slimes = require("slime")
+local player = require("player")
 
 function monsters.spawn()
 	monsters.create()

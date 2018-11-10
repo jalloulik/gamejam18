@@ -86,11 +86,24 @@ function slimes.frameAnimation(dt, slime)
 	end
 end
 
+function slimes.hurtbox(slime)
+	slime.hurtbox = {}
+	slime.hurtbox.x = slime.x - slime.width + 12
+	slime.hurtbox.y = slime.y - slime.height + 20
+	slime.hurtbox.width = (slime.width - 10) * 2
+	slime.hurtbox.height = (slime.height - 10) * 2
+
+	love.graphics.setColor(0, 0, 1, 1)
+		love.graphics.rectangle("line", slime.hurtbox.x, slime.hurtbox.y, slime.hurtbox.width, slime.hurtbox.height)
+	love.graphics.setColor(1, 1, 1, 1)
+end
+
 function slimes.draw()
 	for i,slime in ipairs(slimes.list) do
 		if (slime.isAlive) then
 			local roundedFrame = math.floor(slime.idleFrame)
 			love.graphics.draw(slimes.img, slime.idleframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
+			slimes.hurtbox(slime)
 			-- local roundedFrame = math.floor(slime.moveFrame)
 			-- love.graphics.draw(slime.img, slime.moveframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
 		elseif (slime.isDying == true) then
