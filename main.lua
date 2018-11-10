@@ -7,42 +7,26 @@ love.graphics.setDefaultFilter("nearest")
 
 local background = require("background")
 local player = require("player")
-slimes = {}
-local slimes = require("slime")
+local monsters = require("monsters")
 
-RIGHT = 1
-LEFT = -1
-
-
-window = {}
-window.width = 720
-window.height = 480
-
-function attackSound()
-	love.audio.stop(player.attack.sound);
-	love.audio.play(player.attack.sound);
-end
+require("constants")
+require("window")
 
 function love.load()
-	love.window.setMode(window.width, window.height)
+	window.load()
 	player.init()
-	slimes.create(600, 410)
-	slimes.create(500, 411)
-	slimes.create(200, 411)
-	slimes.init()
+	monsters.spawn()
 end
 
 function love.update(dt)
-	-- player
-	player.frameAnimation(dt)
-	slimes.update(dt)
-	-- slime.frameAnimation(dt)
+	player.update(dt)
+	monsters.update(dt)
 
 end
 
 function love.draw()
 	background.draw()
-	slimes.draw()
+	monsters.draw()
 	player.draw()
 end
 

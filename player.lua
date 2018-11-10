@@ -54,13 +54,22 @@ function player.attackInit()
 	player.attack.img3 = tools.create_anime("Assets/Sprites/adventurer/attack/attack3-", 0, 5)
 end
 
+function player.update(dt)
+	player.frameAnimation(dt)
+end
+
+function player.attackSound()
+	love.audio.stop(player.attack.sound);
+	love.audio.play(player.attack.sound);
+end
+
 function player.frameAnimation(dt)
 	player.idleFrame = player.idleFrame + 6 * dt
 	player.runFrame = player.runFrame + 9 * dt
 
 	if (love.keyboard.isDown("space") or player.isAttacking == true) then
 		if (player.isAttacking == false) then
-			attackSound()
+			player.attackSound()
 		end
 		player.attackFrame = player.attackFrame + 9 * dt
 		player.isAttacking = true
