@@ -211,6 +211,8 @@ function love.draw()
 		local roundedFrame = math.floor(player.idleFrame)
 		love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
 	end
+	love.graphics.rectangle("line", player.x - player.idle.width, player.y - player.idle.height, player.idle.width * 2, player.idle.height * 2)
+
 end
 
 function love.keypressed(key)
