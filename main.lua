@@ -22,7 +22,7 @@ end
 function love.update(dt)
 	player.update(dt)
 	monsters.update(dt)
-	background.update(dt, player.x, window.width)
+	player.x = background.update(dt, player.x, window.width)
 end
 
 function love.draw()
