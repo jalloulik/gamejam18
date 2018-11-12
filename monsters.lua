@@ -2,6 +2,16 @@ local monsters = {}
 local slimes = require("slime")
 local player = require("player")
 
+monsters.hurtboxes = {}
+
+function addHurtbox(x, y, width, height)
+	local hurtbox = {}
+	hurtbox.x = x
+	hurtbox.y = y
+	hurtbox.width = width
+	hurtbox.height = height
+end
+
 function monsters.spawn()
 	monsters.create()
 	monsters.init()
