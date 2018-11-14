@@ -16,6 +16,7 @@ require("window")
 function love.load()
 	window.load()
 	player.init()
+	monsters.load()
 end
 
 function love.update(dt)

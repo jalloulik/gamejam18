@@ -71,17 +71,17 @@ function player.frameAnimation(dt)
 		if (player.isAttacking == false) then
 			player.attackSound()
 		end
-		player.attackFrame = player.attackFrame + 9 * dt
+		player.attackFrame = player.attackFrame + 12 * dt
 		player.isAttacking = true
 	elseif (love.keyboard.isDown("d")) then
 		if (player.isFacing == RIGHT) then
-			player.x = player.x + 2
+			player.x = player.x + 3
 		end
 		player.isRunning = true
 		player.isFacing = RIGHT
 	elseif (love.keyboard.isDown("a")) then
 		if (player.isFacing == LEFT) then
-			player.x = player.x - 2
+			player.x = player.x - 3
 		end
 		player.isRunning = true
 		player.isFacing = LEFT

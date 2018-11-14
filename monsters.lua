@@ -2,6 +2,8 @@ local slimes = require("slime")
 local player = require("player")
 local score = require("score")
 
+test = true
+
 local monsters = {}
 monsters.list = {}
 monsters.spawn = {}
@@ -9,6 +11,10 @@ monsters.spawn.timer = 0
 monsters.spawn.min = 100
 monsters.spawn.max = 700
 global_id = 0
+
+function monsters.load()
+	monsters.create(500, 410, "slime")
+end
 
 function monsters.create(posx, posy, type)
 	global_id = global_id + 1
@@ -20,6 +26,9 @@ function monsters.create(posx, posy, type)
 	monster.isDying = false
 	monster.isRunning = false
 	monster.isFacing = 1
+	monster.isAttacking = false
+	monster.attackTimer = 0
+	monster.attackPermission = true
 	monster.width = 30
 	monster.height = 30
 	monster.type = type
@@ -63,14 +72,31 @@ function monsters.move(monster)
 	end
 end
 
-function monsters.ia(monster)
-	monsters.move(monster)
+function monsters.attack(dt, monster)
+	if (monster.attackTimer < 2 and monster.attackPermission == false) then
+		monster.attackTimer = monster.attackTimer + dt
+	end
+	if (monster.attackTimer >= 2) then
+		monster.attackTimer = 0
+		monster.attackPermission = true
+	end
+	if (math.abs(monster.x - player.x) <= 20 and monster.attackPermission) then
+		monster.isAttacking = true
+		monster.attackPermission = false
+	end
 end
-i = 0
+
+function monsters.ia(dt, monster)
+	monsters.move(monster)
+	monsters.attack(dt, monster)
+end
+
 function monsters.update(dt)
-	monsters.spawner(dt)
+	if (test == false) then
+		monsters.spawner(dt)
+	end
 	for i,monster in ipairs(monsters.list) do
-		monsters.ia(monster)
+		monsters.ia(dt, monster)
 		if (monster.type == "slime") then
 			slimes.addHurtbox(monster)
 			slimes.update(dt, monster)
@@ -87,13 +113,17 @@ end
 function monsters.draw()
 	for i,monster in ipairs(monsters.list) do
 		if (monster.isAlive) then
-			if (monster.isRunning == false) then
+			monsters.drawHurtbox(monster)
+			if (monster.isAttacking == true) then
+				local roundedFrame = math.floor(monster.attackFrame)
+				love.graphics.draw(monster.img, monster.attackframes[roundedFrame], monster.x, monster.y, 0, (monster.isFacing * 2), 2, monster.width / 2, monster.height / 2)
+			elseif (monster.isRunning == false) then
 				local roundedFrame = math.floor(monster.idleFrame)
 				love.graphics.draw(monster.img, monster.idleframes[roundedFrame], monster.x, monster.y, 0, (monster.isFacing * 2), 2, monster.width / 2, monster.height / 2)
-				monsters.drawHurtbox(monster)
 			else
 				local roundedFrame = math.floor(monster.moveFrame)
 				love.graphics.draw(monster.img, monster.moveframes[roundedFrame], monster.x, monster.y, 0, (monster.isFacing * 2), 2, monster.width / 2, monster.height / 2)
+
 			end
 		elseif (monster.isDying == true) then
 			local roundedFrame = math.floor(monster.dieFrame)

@@ -12,6 +12,7 @@ function slimes.init(monster)
 	slimes.IdleInit(monster)
 	slimes.MovingInit(monster)
 	slimes.DieInit(monster)
+	slimes.AttackInit(monster)
 end
 
 function slimes.IdleInit(monster)
@@ -34,6 +35,16 @@ function slimes.MovingInit(monster)
 	end
 end
 
+function slimes.AttackInit(monster)
+	monster.attack = {}
+	monster.attackFrame = 1
+	monster.attackframes = {}
+	for i = 0, 3, 1
+	do
+		monster.attackframes[i + 1] = love.graphics.newQuad(i * monster.width, 1 * monster.height, monster.width, monster.height, slimes.img:getWidth(), slimes.img:getHeight())
+	end
+end
+
 function slimes.DieInit(monster)
 	monster.die = {}
 	monster.dieFrame = 1
@@ -52,6 +63,9 @@ function slimes.frameAnimation(dt, monster)
 	monster.idleFrame = monster.idleFrame + 6 * dt
 	monster.moveFrame = monster.moveFrame + 11 * dt
 
+	if (monster.isAttacking == true) then
+		monster.attackFrame = monster.attackFrame + 8 * dt
+	end
 	if (monster.idleFrame >= #monster.idleframes + 1) then
 		monster.idleFrame = 1;
 	end
@@ -68,6 +82,10 @@ function slimes.frameAnimation(dt, monster)
 	if (monster.dieFrame >= #monster.dieframes + 1) then
 		monster.isDying = false
 		monster.dieFrame = 1;
+	end
+	if (monster.attackFrame >= #monster.attackframes + 1) then
+		monster.attackFrame = 1
+		monster.isAttacking = false
 	end
 end
 
