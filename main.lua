@@ -23,6 +23,23 @@ function love.update(dt)
 	player.update(dt)
 	monsters.update(dt)
 	player.x = background.update(dt, player.x, window.width)
+	-- slime = monsters.addHurtbox(1)
+	player.addHitbox()
+	if (player.isFacing == 1) then
+		for i,monster in ipairs(monsters.list) do
+			local bool = tools.CheckCollision(player.hitbox.xr, player.hitbox.yr, player.hitbox.width, player.hitbox.height, monster.hurtbox.x, monster.hurtbox.y, monster.hurtbox.width, monster.hurtbox.height)
+			if (bool and player.isAttacking) then
+				monsters.kill(monster)
+			end
+		end
+	else
+		for i,monster in ipairs(monsters.list) do
+			local bool = tools.CheckCollision(player.hitbox.xl, player.hitbox.yl, player.hitbox.width, player.hitbox.height, monster.hurtbox.x, monster.hurtbox.y, monster.hurtbox.width, monster.hurtbox.height)
+			if (bool and player.isAttacking) then
+				monsters.kill(monster)
+			end
+		end
+	end
 end
 
 function love.draw()

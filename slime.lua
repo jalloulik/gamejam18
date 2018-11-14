@@ -2,115 +2,81 @@ local slimes = {}
 slimes.list = {}
 slimes.img = love.graphics.newImage("Assets/Sprites/slime/slime-Sheet.png");
 
-function slimes.create(posx, posy)
-	local slime = {}
-	slime.width = 32
-	slime.height = 25
-	slime.x = posx
-	slime.y = posy
-	slime.isAlive = true
-	slime.isDying = false
-	table.insert(slimes.list, slime)
-	-- return slime
+function slimes.create(monster)
+	monster.img = slimes.img
+	monster.width = 32
+	monster.height = 25
 end
 
-function slimes.init()
-	for i,slime in ipairs(slimes.list) do
-		slimes.IdleInit(slime)
-	end
-	for i,slime in ipairs(slimes.list) do
-		slimes.MovingInit(slime)
-	end
-	for i,slime in ipairs(slimes.list) do
-		slimes.DieInit(slime)
-	end
-
+function slimes.init(monster)
+	slimes.IdleInit(monster)
+	slimes.MovingInit(monster)
+	slimes.DieInit(monster)
 end
 
-function slimes.IdleInit(slime)
-	slime.idle = {}
-	slime.idleFrame = 1
-	slime.idleframes = {}
+function slimes.IdleInit(monster)
+	monster.idle = {}
+	monster.idleFrame = 1
+	monster.idleframes = {}
 	for i = 0, 3, 1
 	do
-		slime.idleframes[i + 1] = love.graphics.newQuad(i * slime.width, 0 * slime.height, slime.width, slime.height, slimes.img:getWidth(), slimes.img:getHeight())
+		monster.idleframes[i + 1] = love.graphics.newQuad(i * monster.width, 0 * monster.height, monster.width, monster.height, slimes.img:getWidth(), slimes.img:getHeight())
 	end
 end
 
-function slimes.MovingInit(slime)
-	slime.move = {}
-	slime.moveFrame = 1
-	slime.moveframes = {}
+function slimes.MovingInit(monster)
+	monster.move = {}
+	monster.moveFrame = 1
+	monster.moveframes = {}
 	for i = 0, 3, 1
 	do
-		slime.moveframes[i + 1] = love.graphics.newQuad((4 + i) * slime.width, 0 * slime.height, slime.width, slime.height, slimes.img:getWidth(), slimes.img:getHeight())
+		monster.moveframes[i + 1] = love.graphics.newQuad((4 + i) * monster.width, 0 * monster.height, monster.width, monster.height, slimes.img:getWidth(), slimes.img:getHeight())
 	end
 end
 
-function slimes.DieInit(slime)
-	slime.die = {}
-	slime.dieFrame = 1
-	slime.dieframes = {}
+function slimes.DieInit(monster)
+	monster.die = {}
+	monster.dieFrame = 1
+	monster.dieframes = {}
 	for i = 0, 4, 1
 	do
-		slime.dieframes[i + 1] = love.graphics.newQuad(i * slime.width, 2 * slime.height, slime.width, slime.height, slimes.img:getWidth(), slimes.img:getHeight())
+		monster.dieframes[i + 1] = love.graphics.newQuad(i * monster.width, 2 * monster.height, monster.width, monster.height, slimes.img:getWidth(), slimes.img:getHeight())
 	end
 end
 
-function slimes.update(dt)
-	for i,slime in ipairs(slimes.list) do
-		slimes.frameAnimation(dt, slime)
+function slimes.update(dt, monster)
+	slimes.frameAnimation(dt, monster)
+end
+
+function slimes.frameAnimation(dt, monster)
+	monster.idleFrame = monster.idleFrame + 6 * dt
+	monster.moveFrame = monster.moveFrame + 11 * dt
+
+	if (monster.idleFrame >= #monster.idleframes + 1) then
+		monster.idleFrame = 1;
+	end
+	if (monster.moveFrame >= #monster.moveframes + 1) then
+		monster.moveFrame = 1;
+	end
+	if (love.keyboard.isDown("x") and monster.isAlive) then
+		monster.isAlive = false
+		monster.isDying = true
+	end
+	if (monster.isAlive == false and monster.isDying == true) then
+		monster.dieFrame = monster.dieFrame + 5 * dt
+	end
+	if (monster.dieFrame >= #monster.dieframes + 1) then
+		monster.isDying = false
+		monster.dieFrame = 1;
 	end
 end
 
-function slimes.frameAnimation(dt, slime)
-	slime.idleFrame = slime.idleFrame + 6 * dt
-	slime.moveFrame = slime.moveFrame + 11 * dt
-
-	if (slime.idleFrame >= #slime.idleframes + 1) then
-		slime.idleFrame = 1;
-	end
-	if (slime.moveFrame >= #slime.moveframes + 1) then
-		slime.moveFrame = 1;
-	end
-	if (love.keyboard.isDown("x") and slime.isAlive) then
-		slime.isAlive = false
-		slime.isDying = true
-	end
-	if (slime.isAlive == false and slime.isDying == true) then
-		slime.dieFrame = slime.dieFrame + 5 * dt
-	end
-	if (slime.dieFrame >= #slime.dieframes + 1) then
-		slime.isDying = false
-		slime.dieFrame = 1;
-	end
-end
-
-function slimes.hurtbox(slime)
-	slime.hurtbox = {}
-	slime.hurtbox.x = slime.x - slime.width + 12
-	slime.hurtbox.y = slime.y - slime.height + 20
-	slime.hurtbox.width = (slime.width - 10) * 2
-	slime.hurtbox.height = (slime.height - 10) * 2
-
-	love.graphics.setColor(0, 0, 1, 1)
-		love.graphics.rectangle("line", slime.hurtbox.x, slime.hurtbox.y, slime.hurtbox.width, slime.hurtbox.height)
-	love.graphics.setColor(1, 1, 1, 1)
-end
-
-function slimes.draw()
-	for i,slime in ipairs(slimes.list) do
-		if (slime.isAlive) then
-			local roundedFrame = math.floor(slime.idleFrame)
-			love.graphics.draw(slimes.img, slime.idleframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
-			slimes.hurtbox(slime)
-			-- local roundedFrame = math.floor(slime.moveFrame)
-			-- love.graphics.draw(slime.img, slime.moveframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
-		elseif (slime.isDying == true) then
-			local roundedFrame = math.floor(slime.dieFrame)
-			love.graphics.draw(slimes.img, slime.dieframes[roundedFrame], slime.x, slime.y, 0, 2, 2, slime.width / 2, slime.height / 2)
-		end
-	end
+function slimes.addHurtbox(monster)
+	monster.hurtbox = {}
+	monster.hurtbox.x = monster.x - monster.width + 12
+	monster.hurtbox.y = monster.y - monster.height + 20
+	monster.hurtbox.width = (monster.width - 10) * 2
+	monster.hurtbox.height = (monster.height - 10) * 2
 end
 
 return slimes

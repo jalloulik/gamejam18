@@ -1,4 +1,5 @@
 local background = {}
+local monsters = require("monsters")
 background.img = love.graphics.newImage("Assets/Backgrounds/emergency.png")
 
 background.img1 = love.graphics.newImage("Assets/Backgrounds/background.png")
@@ -12,10 +13,16 @@ function background.update(dt, player_x, win_width)
 	if player_x < 100 then
 		background.camera = background.camera + 2
 		player_x = player_x + 2
+		for i,monster in ipairs(monsters.list) do
+			monster.x = monster.x + 2
+		end
 	end
 	if player_x > win_width - 100 then
 		background.camera = background.camera - 2
 		player_x = player_x - 2
+		for i,monster in ipairs(monsters.list) do
+			monster.x = monster.x - 2
+		end
 	end
 	return player_x
 end

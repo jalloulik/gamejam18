@@ -119,6 +119,18 @@ function player.hurtboxdraw()
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
+function player.addHitbox()
+	player.hitbox = {}
+
+	player.hitbox.xr = player.x - player.idle.width + 45
+	player.hitbox.yr = player.y - player.idle.height - 4
+	player.hitbox.xl = player.x - player.idle.width - 18
+	player.hitbox.yl = player.y - player.idle.height - 4
+	player.hitbox.width = (player.idle.width - 14) * 2
+	player.hitbox.height = (player.idle.height - 0) * 2
+	return player.hitbox
+end
+
 function player.hitboxdraw()
 	player.hitbox = {}
 
@@ -126,6 +138,8 @@ function player.hitboxdraw()
 	player.hitbox.yr = player.y - player.idle.height - 4
 	player.hitbox.xl = player.x - player.idle.width - 18
 	player.hitbox.yl = player.y - player.idle.height - 4
+	player.hitbox.width = (player.idle.width - 14) * 2
+	player.hitbox.height = (player.idle.height - 0) * 2
 
 	love.graphics.setColor(1, 0, 0, 1)
 	if (player.isFacing == RIGHT) then
