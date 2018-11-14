@@ -63,7 +63,7 @@ function slimes.frameAnimation(dt, monster)
 		monster.isDying = true
 	end
 	if (monster.isAlive == false and monster.isDying == true) then
-		monster.dieFrame = monster.dieFrame + 5 * dt
+		monster.dieFrame = monster.dieFrame + 12 * dt
 	end
 	if (monster.dieFrame >= #monster.dieframes + 1) then
 		monster.isDying = false

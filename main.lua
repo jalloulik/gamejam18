@@ -8,22 +8,20 @@ love.graphics.setDefaultFilter("nearest")
 local background = require("background")
 local player = require("player")
 local monsters = require("monsters")
-
 local tools = require("tools")
+local score = require("score")
 require("constants")
 require("window")
 
 function love.load()
 	window.load()
 	player.init()
-	monsters.spawn()
 end
 
 function love.update(dt)
 	player.update(dt)
 	monsters.update(dt)
 	player.x = background.update(dt, player.x, window.width)
-	-- slime = monsters.addHurtbox(1)
 	player.addHitbox()
 	if (player.isFacing == 1) then
 		for i,monster in ipairs(monsters.list) do
@@ -46,6 +44,7 @@ function love.draw()
 	background.draw()
 	monsters.draw()
 	player.draw()
+	score.draw()
 end
 
 function love.keypressed(key)
