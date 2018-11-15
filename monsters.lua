@@ -4,7 +4,7 @@ local score = require("score")
 
 test = {}
 test.move = false
-test.spawn = true
+test.spawn = false
 
 local monsters = {}
 monsters.list = {}
@@ -60,17 +60,19 @@ function monsters.kill(monster)
 end
 
 function monsters.move(monster)
-	if (math.abs(monster.x - player.x) > 20) then
-		monster.isRunning = true
-		if (monster.x > player.x) then
-			monster.x = monster.x - 1
-			monster.isFacing = 1
+	if (player.isAlive) then
+		if (math.abs(monster.x - player.x) > 20) then
+			monster.isRunning = true
+			if (monster.x > player.x) then
+				monster.x = monster.x - 1
+				monster.isFacing = 1
+			else
+				monster.x = monster.x + 1
+				monster.isFacing = -1
+			end
 		else
-			monster.x = monster.x + 1
-			monster.isFacing = -1
+			monster.isRunning = false
 		end
-	else
-		monster.isRunning = false
 	end
 end
 
@@ -82,7 +84,7 @@ function monsters.attack(dt, monster)
 		monster.attackTimer = 0
 		monster.attackPermission = true
 	end
-	if (math.abs(monster.x - player.x) <= 20 and monster.attackPermission) then
+	if (math.abs(monster.x - player.x) <= 20 and monster.attackPermission and player.isAlive) then
 		monster.isAttacking = true
 		monster.attackPermission = false
 	end

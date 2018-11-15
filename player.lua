@@ -6,11 +6,15 @@ player.y = 410
 player.isRunning = false
 player.isAttacking = false
 player.isFacing = 1
+player.isAlive = true
+player.isDying = false
 
 function player.init()
 	player.idleInit()
 	player.runningInit()
 	player.attackInit()
+	player.dieInit()
+	player.deadInit()
 end
 
 function player.idleInit()
@@ -54,6 +58,22 @@ function player.attackInit()
 	player.attack.img3 = tools.create_anime("Assets/Sprites/adventurer/attack/attack3-", 0, 5)
 end
 
+function player.dieInit()
+	player.die = {}
+	player.dieFrame = 1
+	player.die.width = 50
+	player.die.height = 37
+	player.die.img = tools.create_anime("Assets/Sprites/adventurer/die/adventurer-die-", 0, 6)
+end
+
+function player.deadInit()
+	player.dead = {}
+	player.deadFrame = 1
+	player.dead.width = 50
+	player.dead.height = 37
+	player.dead.img = tools.create_anime("Assets/Sprites/adventurer/die/adventurer-die-", 4, 2)
+end
+
 function player.update(dt)
 	player.frameAnimation(dt)
 end
@@ -63,37 +83,59 @@ function player.attackSound()
 	love.audio.play(player.attack.sound);
 end
 
+function player.kill()
+	if (player.isAlive) then
+		player.isAlive = false
+		player.isDying = true
+	end
+end
+
 function player.frameAnimation(dt)
 	player.idleFrame = player.idleFrame + 6 * dt
 	player.runFrame = player.runFrame + 9 * dt
 
-	if (love.keyboard.isDown("space") or player.isAttacking == true) then
-		if (player.isAttacking == false) then
-			player.attackSound()
+	if (player.isAlive) then
+		if (love.keyboard.isDown("space") or player.isAttacking == true) then
+			if (player.isAttacking == false) then
+				player.attackSound()
+			end
+			player.attackFrame = player.attackFrame + 12 * dt
+			player.isAttacking = true
+		elseif (love.keyboard.isDown("d")) then
+			if (player.isFacing == RIGHT) then
+				player.x = player.x + 3
+			end
+			player.isRunning = true
+			player.isFacing = RIGHT
+		elseif (love.keyboard.isDown("a")) then
+			if (player.isFacing == LEFT) then
+				player.x = player.x - 3
+			end
+			player.isRunning = true
+			player.isFacing = LEFT
+		else
+			player.isRunning = false
 		end
-		player.attackFrame = player.attackFrame + 12 * dt
-		player.isAttacking = true
-	elseif (love.keyboard.isDown("d")) then
-		if (player.isFacing == RIGHT) then
-			player.x = player.x + 3
-		end
-		player.isRunning = true
-		player.isFacing = RIGHT
-	elseif (love.keyboard.isDown("a")) then
-		if (player.isFacing == LEFT) then
-			player.x = player.x - 3
-		end
-		player.isRunning = true
-		player.isFacing = LEFT
-	else
-		player.isRunning = false
-	end
 
-	if (player.runFrame >= #player.runframes + 1) then
-		player.runFrame = 1
+		if (player.runFrame >= #player.runframes + 1) then
+			player.runFrame = 1
+		end
+		if (player.idleFrame >= #player.idleframes + 1) then
+			player.idleFrame = 1
+		end
 	end
-	if (player.idleFrame >= #player.idleframes + 1) then
-		player.idleFrame = 1
+	if (player.isAlive == false and player.isDying == true) then
+		player.dieFrame = player.dieFrame + 10 * dt
+	end
+	if (player.dieFrame >= #player.die.img + 1) then
+		player.isDying = false
+		player.dieFrame = 1
+	end
+	if (player.isAlive == false and player.isDying == false) then
+		player.deadFrame = player.deadFrame + 3 * dt
+	end
+	if (player.deadFrame >= #player.dead.img + 1) then
+		player.deadFrame = 1
 	end
 	if (player.attackFrame >= #player.attack.img + 1) then
 		player.attackFrame = 1
@@ -168,18 +210,26 @@ function player.hitboxdraw()
 end
 
 function player.draw()
-	if (player.isAttacking == true) then
-		local roundedFrame = math.floor(player.attackFrame)
-		love.graphics.draw(player.attack.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.attack.width / 2, player.attack.height / 2)
-	elseif (player.isRunning == true) then
-		local roundedFrame = math.floor(player.runFrame)
-			love.graphics.draw(player.run.img, player.runframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.run.width / 2, player.run.height / 2)
+	if (player.isAlive) then
+		if (player.isAttacking == true) then
+			local roundedFrame = math.floor(player.attackFrame)
+			love.graphics.draw(player.attack.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.attack.width / 2, player.attack.height / 2)
+		elseif (player.isRunning == true) then
+			local roundedFrame = math.floor(player.runFrame)
+				love.graphics.draw(player.run.img, player.runframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.run.width / 2, player.run.height / 2)
+		else
+			local roundedFrame = math.floor(player.idleFrame)
+			love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
+		end
+		player.hurtboxdraw()
+		player.hitboxdraw()
+	elseif (player.isDying) then
+		local roundedFrame = math.floor(player.dieFrame)
+		love.graphics.draw(player.die.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.die.width / 2, player.die.height / 2)
 	else
-		local roundedFrame = math.floor(player.idleFrame)
-		love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
+		local roundedFrame = math.floor(player.deadFrame)
+		love.graphics.draw(player.dead.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.dead.width / 2, player.dead.height / 2)
 	end
-	player.hurtboxdraw()
-	player.hitboxdraw()
 end
 
 return player
