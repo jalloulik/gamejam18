@@ -35,11 +35,11 @@ function love.update(dt)
 	end
 	for i,monster in ipairs(monsters.list) do
 		local bool = tools.CheckCollision(monster.hitbox.x, monster.hitbox.y, monster.hitbox.width, monster.hitbox.height, player.hurtbox.x, player.hurtbox.y, player.hurtbox.width, player.hurtbox.height)
-		if (bool and monster.isAttacking and player.isAlive) then
+		if (bool and monster.isAttacking and monster.isAlive and player.isAlive) then
 			score.damageAdd()
 		end
 	end
-	if (score.damageTaken > 30) then
+	if (score.damageTaken > 100) then
 		player.kill()
 	end
 end

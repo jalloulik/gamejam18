@@ -6,10 +6,13 @@ test = {}
 test.move = false
 test.spawn = false
 
+local startTime = love.timer.getTime()
+
 local monsters = {}
 monsters.list = {}
 monsters.spawn = {}
 monsters.spawn.timer = 0
+monsters.spawn.speed = 5
 monsters.spawn.min = 100
 monsters.spawn.max = 700
 global_id = 0
@@ -30,7 +33,7 @@ function monsters.create(posx, posy, type)
 	monster.isFacing = -1
 	monster.isAttacking = false
 	monster.attackTimer = 0
-	monster.attackPermission = true
+	monster.attackPermission = false
 	monster.width = 30
 	monster.height = 30
 	monster.type = type
@@ -42,12 +45,17 @@ function monsters.create(posx, posy, type)
 end
 
 spawnTimer = 0
+i = 1
 
 function monsters.spawner(dt)
 	monsters.spawn.timer = monsters.spawn.timer + dt
-	if (monsters.spawn.timer > 1) then
+	if (monsters.spawn.timer > monsters.spawn.speed) then
 		monsters.create(love.math.random(monsters.spawn.min, monsters.spawn.max), 410, "slime")
 		monsters.spawn.timer = 0
+	end
+	if ((love.timer.getTime() - startTime) > i) then
+		i = i + 10
+		monsters.spawn.speed = monsters.spawn.speed / 2
 	end
 end
 
