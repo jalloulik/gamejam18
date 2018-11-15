@@ -13,6 +13,8 @@ local score = require("score")
 require("constants")
 require("window")
 
+local damage = 0
+
 function love.load()
 	window.load()
 	player.init()
@@ -24,19 +26,17 @@ function love.update(dt)
 	monsters.update(dt)
 	player.x = background.update(dt, player.x, window.width)
 	player.addHitbox()
-	if (player.isFacing == 1) then
-		for i,monster in ipairs(monsters.list) do
-			local bool = tools.CheckCollision(player.hitbox.xr, player.hitbox.yr, player.hitbox.width, player.hitbox.height, monster.hurtbox.x, monster.hurtbox.y, monster.hurtbox.width, monster.hurtbox.height)
-			if (bool and player.isAttacking) then
-				monsters.kill(monster)
-			end
+	player.addHurtbox()
+	for i,monster in ipairs(monsters.list) do
+		local bool = tools.CheckCollision(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height, monster.hurtbox.x, monster.hurtbox.y, monster.hurtbox.width, monster.hurtbox.height)
+		if (bool and player.isAttacking) then
+			monsters.kill(monster)
 		end
-	else
-		for i,monster in ipairs(monsters.list) do
-			local bool = tools.CheckCollision(player.hitbox.xl, player.hitbox.yl, player.hitbox.width, player.hitbox.height, monster.hurtbox.x, monster.hurtbox.y, monster.hurtbox.width, monster.hurtbox.height)
-			if (bool and player.isAttacking) then
-				monsters.kill(monster)
-			end
+	end
+	for i,monster in ipairs(monsters.list) do
+		local bool = tools.CheckCollision(monster.hitbox.x, monster.hitbox.y, monster.hitbox.width, monster.hitbox.height, player.hurtbox.x, player.hurtbox.y, player.hurtbox.width, player.hurtbox.height)
+		if (bool and monster.isAttacking) then
+			score.damageAdd()
 		end
 	end
 end

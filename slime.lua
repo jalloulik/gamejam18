@@ -99,10 +99,13 @@ end
 
 function slimes.addHitbox(monster)
 	monster.hitbox = {}
-	monster.hitbox.xl = monster.x - monster.width + 2
-	monster.hitbox.yl = monster.y - monster.height + 10
-	monster.hitbox.xr = monster.x - monster.width + 24
-	monster.hitbox.yr = monster.y - monster.height + 10
+	if (monster.isFacing == 1) then
+		monster.hitbox.x = monster.x - monster.width + 2
+		monster.hitbox.y = monster.y - monster.height + 10
+	else
+		monster.hitbox.x = monster.x - monster.width + 24
+		monster.hitbox.y = monster.y - monster.height + 10
+	end
 	monster.hitbox.width = (monster.width - 13) * 2
 	monster.hitbox.height = (monster.height - 5) * 2
 end

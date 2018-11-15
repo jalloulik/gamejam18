@@ -117,11 +117,7 @@ end
 
 function monsters.drawHitbox(monster)
 		love.graphics.setColor(1, 0, 0, 1)
-		if (monster.isFacing == 1) then
-			love.graphics.rectangle("line", monster.hitbox.xl, monster.hitbox.yl, monster.hitbox.width, monster.hitbox.height)
-		else
-			love.graphics.rectangle("line", monster.hitbox.xr, monster.hitbox.yr, monster.hitbox.width, monster.hitbox.height)
-		end
+			love.graphics.rectangle("line", monster.hitbox.x, monster.hitbox.y, monster.hitbox.width, monster.hitbox.height)
 		love.graphics.setColor(1, 1, 1, 1)
 end
 

@@ -101,6 +101,20 @@ function player.frameAnimation(dt)
 	end
 end
 
+function player.addHurtbox()
+	player.hurtbox = {}
+	if (player.isFacing == 1) then
+		player.hurtbox.x = player.x - player.idle.width + 18
+		player.hurtbox.y = player.y - player.idle.height + 6
+	else
+		player.hurtbox.x = player.x - player.idle.width + 12
+		player.hurtbox.y = player.y - player.idle.height + 6
+	end
+	player.hurtbox.width = (player.idle.width - 14) * 2
+	player.hurtbox.height = (player.idle.height - 8) * 2
+	return player.hurtbox
+end
+
 function player.hurtboxdraw()
 	player.hurtbox = {}
 	player.hurtbox.xr = player.x - player.idle.width + 18
@@ -122,10 +136,13 @@ end
 function player.addHitbox()
 	player.hitbox = {}
 
-	player.hitbox.xr = player.x - player.idle.width + 45
-	player.hitbox.yr = player.y - player.idle.height - 4
-	player.hitbox.xl = player.x - player.idle.width - 18
-	player.hitbox.yl = player.y - player.idle.height - 4
+	if (player.isFacing == 1) then
+		player.hitbox.x = player.x - player.idle.width + 45
+		player.hitbox.y = player.y - player.idle.height - 4
+	else
+		player.hitbox.x = player.x - player.idle.width - 18
+		player.hitbox.y = player.y - player.idle.height - 4
+	end
 	player.hitbox.width = (player.idle.width - 14) * 2
 	player.hitbox.height = (player.idle.height - 0) * 2
 	return player.hitbox
