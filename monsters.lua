@@ -2,9 +2,7 @@ local slimes = require("slime")
 local player = require("player")
 local score = require("score")
 
-test = {}
-test.move = false
-test.spawn = false
+local dev = require("dev")
 
 local startTime = love.timer.getTime()
 
@@ -30,7 +28,7 @@ function monsters.create(posx, posy, type)
 	monster.isAlive = true
 	monster.isDying = false
 	monster.isRunning = false
-	monster.isFacing = -1
+	monster.isFacing = 1
 	monster.isAttacking = false
 	monster.attackTimer = 0
 	monster.attackPermission = false
@@ -99,14 +97,14 @@ function monsters.attack(dt, monster)
 end
 
 function monsters.ia(dt, monster)
-	if (test.move == false) then
+	if (dev.move == false) then
 		monsters.move(monster)
 	end
 	monsters.attack(dt, monster)
 end
 
 function monsters.update(dt)
-	if (test.spawn == false) then
+	if (dev.spawn == false) then
 		monsters.spawner(dt)
 	end
 	for i,monster in ipairs(monsters.list) do
@@ -134,8 +132,10 @@ end
 function monsters.draw()
 	for i,monster in ipairs(monsters.list) do
 		if (monster.isAlive) then
-			monsters.drawHurtbox(monster)
-			monsters.drawHitbox(monster)
+			if (dev.boxes) then
+				monsters.drawHurtbox(monster)
+				monsters.drawHitbox(monster)
+			end
 			if (monster.isAttacking == true) then
 				local roundedFrame = math.floor(monster.attackFrame)
 				love.graphics.draw(monster.img, monster.attackframes[roundedFrame], monster.x, monster.y, 0, (monster.isFacing * 2), 2, monster.width / 2, monster.height / 2)

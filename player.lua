@@ -1,4 +1,5 @@
 local tools = require("tools")
+local dev = require("dev")
 
 local player = {}
 player.x = 172
@@ -99,7 +100,7 @@ function player.frameAnimation(dt)
 			if (player.isAttacking == false) then
 				player.attackSound()
 			end
-			player.attackFrame = player.attackFrame + 12 * dt
+			player.attackFrame = player.attackFrame + 14 * dt
 			player.isAttacking = true
 		elseif (love.keyboard.isDown("d")) then
 			if (player.isFacing == RIGHT) then
@@ -125,7 +126,7 @@ function player.frameAnimation(dt)
 		end
 	end
 	if (player.isAlive == false and player.isDying == true) then
-		player.dieFrame = player.dieFrame + 10 * dt
+		player.dieFrame = player.dieFrame + 12 * dt
 	end
 	if (player.dieFrame >= #player.die.img + 1) then
 		player.isDying = false
@@ -221,8 +222,10 @@ function player.draw()
 			local roundedFrame = math.floor(player.idleFrame)
 			love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
 		end
-		player.hurtboxdraw()
-		player.hitboxdraw()
+		if (dev.boxes) then
+			player.hurtboxdraw()
+			player.hitboxdraw()
+		end
 	elseif (player.isDying) then
 		local roundedFrame = math.floor(player.dieFrame)
 		love.graphics.draw(player.die.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.die.width / 2, player.die.height / 2)
