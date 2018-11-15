@@ -97,4 +97,14 @@ function slimes.addHurtbox(monster)
 	monster.hurtbox.height = (monster.height - 10) * 2
 end
 
+function slimes.addHitbox(monster)
+	monster.hitbox = {}
+	monster.hitbox.xl = monster.x - monster.width + 2
+	monster.hitbox.yl = monster.y - monster.height + 10
+	monster.hitbox.xr = monster.x - monster.width + 24
+	monster.hitbox.yr = monster.y - monster.height + 10
+	monster.hitbox.width = (monster.width - 13) * 2
+	monster.hitbox.height = (monster.height - 5) * 2
+end
+
 return slimes

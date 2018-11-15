@@ -2,7 +2,9 @@ local slimes = require("slime")
 local player = require("player")
 local score = require("score")
 
-test = true
+test = {}
+test.move = false
+test.spawn = true
 
 local monsters = {}
 monsters.list = {}
@@ -25,7 +27,7 @@ function monsters.create(posx, posy, type)
 	monster.isAlive = true
 	monster.isDying = false
 	monster.isRunning = false
-	monster.isFacing = 1
+	monster.isFacing = -1
 	monster.isAttacking = false
 	monster.attackTimer = 0
 	monster.attackPermission = true
@@ -87,18 +89,21 @@ function monsters.attack(dt, monster)
 end
 
 function monsters.ia(dt, monster)
-	monsters.move(monster)
+	if (test.move == false) then
+		monsters.move(monster)
+	end
 	monsters.attack(dt, monster)
 end
 
 function monsters.update(dt)
-	if (test == false) then
+	if (test.spawn == false) then
 		monsters.spawner(dt)
 	end
 	for i,monster in ipairs(monsters.list) do
 		monsters.ia(dt, monster)
 		if (monster.type == "slime") then
 			slimes.addHurtbox(monster)
+			slimes.addHitbox(monster)
 			slimes.update(dt, monster)
 		end
 	end
@@ -110,10 +115,21 @@ function monsters.drawHurtbox(monster)
 		love.graphics.setColor(1, 1, 1, 1)
 end
 
+function monsters.drawHitbox(monster)
+		love.graphics.setColor(1, 0, 0, 1)
+		if (monster.isFacing == 1) then
+			love.graphics.rectangle("line", monster.hitbox.xl, monster.hitbox.yl, monster.hitbox.width, monster.hitbox.height)
+		else
+			love.graphics.rectangle("line", monster.hitbox.xr, monster.hitbox.yr, monster.hitbox.width, monster.hitbox.height)
+		end
+		love.graphics.setColor(1, 1, 1, 1)
+end
+
 function monsters.draw()
 	for i,monster in ipairs(monsters.list) do
 		if (monster.isAlive) then
 			monsters.drawHurtbox(monster)
+			monsters.drawHitbox(monster)
 			if (monster.isAttacking == true) then
 				local roundedFrame = math.floor(monster.attackFrame)
 				love.graphics.draw(monster.img, monster.attackframes[roundedFrame], monster.x, monster.y, 0, (monster.isFacing * 2), 2, monster.width / 2, monster.height / 2)
