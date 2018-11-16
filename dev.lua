@@ -1,6 +1,6 @@
 dev = {}
-dev.move = true
-dev.spawn = true
+dev.move = false
+dev.spawn = false
 dev.boxes = true
 
 return dev

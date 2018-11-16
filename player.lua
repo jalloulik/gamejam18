@@ -119,7 +119,6 @@ function player.attackAnimation(dt)
 		end
 		player.attackFrame = player.attackFrame + 14 * dt
 	end
-
 end
 
 function player.runningAnimation(dt)
@@ -217,28 +216,48 @@ function player.hitboxdraw()
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
+function player.attackDraw()
+	local roundedFrame = math.floor(player.attackFrame)
+	love.graphics.draw(player.attack.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.attack.width / 2, player.attack.height / 2)
+end
+
+function player.runDraw()
+	local roundedFrame = math.floor(player.runFrame)
+		love.graphics.draw(player.run.img, player.runframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.run.width / 2, player.run.height / 2)
+end
+
+function player.idleDraw()
+	local roundedFrame = math.floor(player.idleFrame)
+	love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
+end
+
+function player.dieDraw()
+	local roundedFrame = math.floor(player.dieFrame)
+	love.graphics.draw(player.die.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.die.width / 2, player.die.height / 2)
+end
+
+function player.deadDraw()
+	local roundedFrame = math.floor(player.deadFrame)
+	love.graphics.draw(player.dead.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.dead.width / 2, player.dead.height / 2)
+end
+
 function player.draw()
 	if (player.isAlive) then
 		if (player.isAttacking == true) then
-			local roundedFrame = math.floor(player.attackFrame)
-			love.graphics.draw(player.attack.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.attack.width / 2, player.attack.height / 2)
+			player.attackDraw()
 		elseif (player.isRunning == true) then
-			local roundedFrame = math.floor(player.runFrame)
-				love.graphics.draw(player.run.img, player.runframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.run.width / 2, player.run.height / 2)
+			player.runDraw()
 		else
-			local roundedFrame = math.floor(player.idleFrame)
-			love.graphics.draw(player.idle.img, player.idleframes[roundedFrame], player.x, player.y, 0, (player.isFacing * 2), 2, player.idle.width / 2, player.idle.height / 2)
-		end
-		if (dev.boxes) then
-			player.hurtboxdraw()
-			player.hitboxdraw()
+			player.idleDraw()
 		end
 	elseif (player.isDying) then
-		local roundedFrame = math.floor(player.dieFrame)
-		love.graphics.draw(player.die.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.die.width / 2, player.die.height / 2)
+		player.dieDraw()
 	else
-		local roundedFrame = math.floor(player.deadFrame)
-		love.graphics.draw(player.dead.img[roundedFrame], player.x, player.y - 8, 0, (player.isFacing * 2), 2, player.dead.width / 2, player.dead.height / 2)
+		player.deadDraw()
+	end
+	if (dev.boxes) then
+		player.hurtboxdraw()
+		player.hitboxdraw()
 	end
 end
 
