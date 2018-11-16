@@ -29,7 +29,7 @@ function love.update(dt)
 	player.addHurtbox()
 	for i,monster in ipairs(monsters.list) do
 		local bool = tools.CheckCollision(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height, monster.hurtbox.x, monster.hurtbox.y, monster.hurtbox.width, monster.hurtbox.height)
-		if (bool and player.isAttacking) then
+		if (bool and player.isAttacking and player.isAlive) then
 			monsters.kill(monster)
 		end
 	end

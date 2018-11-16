@@ -9,6 +9,8 @@ player.isAttacking = false
 player.isFacing = 1
 player.isAlive = true
 player.isDying = false
+player.attackPermission = true
+player.attackTimer = 0
 
 function player.init()
 	player.idleInit()
@@ -77,11 +79,26 @@ end
 
 function player.update(dt)
 	player.frameAnimation(dt)
+	player.attackLaunch(dt)
 end
 
 function player.attackSound()
 	love.audio.stop(player.attack.sound);
 	love.audio.play(player.attack.sound);
+end
+
+function player.attackLaunch(dt)
+	if (player.attackTimer < 0.7 and player.attackPermission == false) then
+		player.attackTimer = player.attackTimer + dt
+	end
+	if (player.attackTimer >= 0.7) then
+		player.attackTimer = 0
+		player.attackPermission = true
+	end
+	if (love.keyboard.isDown("space") and player.isAlive and player.isAttacking == false and player.attackPermission) then
+		player.isAttacking = true
+		player.attackPermission = false
+	end
 end
 
 function player.kill()
@@ -91,33 +108,43 @@ function player.kill()
 	end
 end
 
+function player.attackAnimation(dt)
+	if (player.isAttacking == false) then
+		player.attackSound()
+	end
+	player.attackFrame = player.attackFrame + 14 * dt
+end
+
+function player.runningAnimation(dt)
+	if (love.keyboard.isDown("d")) then
+		if (player.isFacing == RIGHT) then
+			player.x = player.x + 3
+		end
+		if (player.isAttacking == false) then
+			player.isRunning = true
+		end
+		player.isFacing = RIGHT
+	elseif (love.keyboard.isDown("a")) then
+		if (player.isFacing == LEFT) then
+			player.x = player.x - 3
+		end
+		if (player.isAttacking == false) then
+			player.isRunning = true
+		end
+		player.isFacing = LEFT
+	else
+		player.isRunning = false
+	end
+end
+
 function player.frameAnimation(dt)
 	player.idleFrame = player.idleFrame + 6 * dt
 	player.runFrame = player.runFrame + 9 * dt
-
 	if (player.isAlive) then
-		if (love.keyboard.isDown("space") or player.isAttacking == true) then
-			if (player.isAttacking == false) then
-				player.attackSound()
-			end
-			player.attackFrame = player.attackFrame + 14 * dt
-			player.isAttacking = true
-		elseif (love.keyboard.isDown("d")) then
-			if (player.isFacing == RIGHT) then
-				player.x = player.x + 3
-			end
-			player.isRunning = true
-			player.isFacing = RIGHT
-		elseif (love.keyboard.isDown("a")) then
-			if (player.isFacing == LEFT) then
-				player.x = player.x - 3
-			end
-			player.isRunning = true
-			player.isFacing = LEFT
-		else
-			player.isRunning = false
+		if (player.isAttacking == true) then
+			player.attackAnimation(dt)
 		end
-
+		player.runningAnimation(dt)
 		if (player.runFrame >= #player.runframes + 1) then
 			player.runFrame = 1
 		end
@@ -159,20 +186,8 @@ function player.addHurtbox()
 end
 
 function player.hurtboxdraw()
-	player.hurtbox = {}
-	player.hurtbox.xr = player.x - player.idle.width + 18
-	player.hurtbox.yr = player.y - player.idle.height + 6
-	player.hurtbox.xl = player.x - player.idle.width + 12
-	player.hurtbox.yl = player.y - player.idle.height + 6
-	player.hurtbox.width = (player.idle.width - 14) * 2
-	player.hurtbox.height = (player.idle.height - 8) * 2
-
 	love.graphics.setColor(0, 0, 1, 1)
-	if (player.isFacing == RIGHT) then
-		love.graphics.rectangle("line", player.hurtbox.xr, player.hurtbox.yr, player.hurtbox.width, player.hurtbox.height)
-	else
-		love.graphics.rectangle("line", player.hurtbox.xl, player.hurtbox.yl, player.hurtbox.width, player.hurtbox.height)
-	end
+	love.graphics.rectangle("line", player.hurtbox.x, player.hurtbox.y, player.hurtbox.width, player.hurtbox.height)
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
@@ -192,21 +207,8 @@ function player.addHitbox()
 end
 
 function player.hitboxdraw()
-	player.hitbox = {}
-
-	player.hitbox.xr = player.x - player.idle.width + 45
-	player.hitbox.yr = player.y - player.idle.height - 4
-	player.hitbox.xl = player.x - player.idle.width - 18
-	player.hitbox.yl = player.y - player.idle.height - 4
-	player.hitbox.width = (player.idle.width - 14) * 2
-	player.hitbox.height = (player.idle.height - 0) * 2
-
 	love.graphics.setColor(1, 0, 0, 1)
-	if (player.isFacing == RIGHT) then
-		love.graphics.rectangle("line", player.hitbox.xr, player.hitbox.yr, (player.idle.width - 14) * 2, (player.idle.height - 0) * 2)
-	else
-		love.graphics.rectangle("line", player.hitbox.xl, player.hitbox.yl, (player.idle.width - 14) * 2, (player.idle.height - 0) * 2)
-	end
+	love.graphics.rectangle("line", player.hitbox.x, player.hitbox.y, (player.idle.width - 14) * 2, (player.idle.height - 0) * 2)
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
