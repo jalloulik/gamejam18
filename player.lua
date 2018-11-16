@@ -99,6 +99,10 @@ function player.attackLaunch(dt)
 		player.isAttacking = true
 		player.attackPermission = false
 	end
+	if (player.attackFrame >= #player.attack.img + 1) then
+		player.attackFrame = 1
+		player.isAttacking = false
+	end
 end
 
 function player.kill()
@@ -109,10 +113,13 @@ function player.kill()
 end
 
 function player.attackAnimation(dt)
-	if (player.isAttacking == false) then
-		player.attackSound()
+	if (player.isAttacking == true) then
+		if (player.isAttacking == false) then
+			player.attackSound()
+		end
+		player.attackFrame = player.attackFrame + 14 * dt
 	end
-	player.attackFrame = player.attackFrame + 14 * dt
+
 end
 
 function player.runningAnimation(dt)
@@ -135,23 +142,15 @@ function player.runningAnimation(dt)
 	else
 		player.isRunning = false
 	end
+	if (player.runFrame >= #player.runframes + 1) then
+		player.runFrame = 1
+	end
+	if (player.idleFrame >= #player.idleframes + 1) then
+		player.idleFrame = 1
+	end
 end
 
-function player.frameAnimation(dt)
-	player.idleFrame = player.idleFrame + 6 * dt
-	player.runFrame = player.runFrame + 9 * dt
-	if (player.isAlive) then
-		if (player.isAttacking == true) then
-			player.attackAnimation(dt)
-		end
-		player.runningAnimation(dt)
-		if (player.runFrame >= #player.runframes + 1) then
-			player.runFrame = 1
-		end
-		if (player.idleFrame >= #player.idleframes + 1) then
-			player.idleFrame = 1
-		end
-	end
+function player.dieAnimation(dt)
 	if (player.isAlive == false and player.isDying == true) then
 		player.dieFrame = player.dieFrame + 12 * dt
 	end
@@ -165,10 +164,16 @@ function player.frameAnimation(dt)
 	if (player.deadFrame >= #player.dead.img + 1) then
 		player.deadFrame = 1
 	end
-	if (player.attackFrame >= #player.attack.img + 1) then
-		player.attackFrame = 1
-		player.isAttacking = false
+end
+
+function player.frameAnimation(dt)
+	player.idleFrame = player.idleFrame + 6 * dt
+	player.runFrame = player.runFrame + 9 * dt
+	if (player.isAlive) then
+		player.attackAnimation(dt)
+		player.runningAnimation(dt)
 	end
+	player.dieAnimation(dt)
 end
 
 function player.addHurtbox()
