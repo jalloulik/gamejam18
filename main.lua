@@ -49,7 +49,7 @@ function love.update(dt)
 			player.kill()
 		end
 	elseif scene == "menu" then
-		menu.update(inGame)
+		menu.update(dt, inGame)
 	end
 end
 

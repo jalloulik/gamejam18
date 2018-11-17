@@ -14,6 +14,12 @@ function ui.newGroup()
 		end
 	end
 
+	function myGroup:update(dt)
+		for n, v in pairs(myGroup.elements) do
+			v:update(dt)
+		end
+	end
+
 	function myGroup:draw()
 		love.graphics.push()
 		for n, v in pairs(myGroup.elements) do
@@ -30,6 +36,10 @@ local function newElement(pX, pY)
 	myElement.Y = pY
 	myElement.Visible = true
 	
+	function myElement:update(dt)
+		print("newElement / update / Not / implemented")
+	end
+
 	function myElement:draw()
 		print("newElement / draw / Not implemented")
 	end
@@ -95,6 +105,56 @@ function ui.newText(pX, pY, pW, pH, pText, pFont, pHAlign, pVAlign)
 		self:drawText()
 	end
 	return myText
+end
+
+function ui.newButton(pX, pY, pW, pH, pText, pFont)
+	local myButton = ui.newPanel(pX, pY, pW, pH)
+	myButton.Text = pText
+	myButton.Font = pFont
+	myButton.Label = ui.newText(pX, pY, pW, pH, pText, pFont, "center", "center")
+	myButton.isHover = false
+	myButton.isPressed = false
+	myButton.oldButtonState = false
+
+	function myButton:update(dt)
+		local mx, my = love.mouse.getPosition()
+		if mx > self.X and mx < self.X + self.W and
+		 my > self.Y and my < self.Y + self.H then
+			if self.isHover == false then
+				self.isHover = true
+			end
+		else
+			if self.isHover == true then
+				self.isHover = false
+			end
+		end
+		if self.isHover and love.mouse.isDown(1) and
+			self.isPressed == false and
+			self.oldButtonState == false then
+			self.isPressed = true
+		else
+			if self.isPressed == true and love.mouse.isDown(1) == false then
+				self.isPressed = false
+			end
+		end
+		self.oldButtonState = love.mouse.isDown(1)
+	end
+
+	function myButton:draw()
+		if self.isPressed then
+			--self:drawPanel()
+			love.graphics.setColor(0.1, 0.1, 0.1)
+			love.graphics.rectangle("fill", self.X, self.Y, self.W, self.H)
+		elseif self.isHover then
+			--self.drawPanel()
+			love.graphics.setColor(0.3, 0.3, 0.3)
+			love.graphics.rectangle("line", self.X, self.Y, self.W, self.H)
+		else
+			--self:drawPanel()
+		end
+		self.Label:draw()
+	end
+	return myButton
 end
 
 return ui
