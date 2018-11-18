@@ -36,7 +36,6 @@ end
 function background.draw()
 	love.graphics.draw(background.img, 0 + background.camera, 0, 0, 3, 3)
 	love.graphics.draw(background.img, background.camera + 720, 0, 0, 3, 3)
-	love.graphics.print(background.camera)
 	-- love.graphics.draw(background.img1, 0 + background.camera, -500, 0, 1, 1)
 end
 

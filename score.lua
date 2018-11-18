@@ -16,8 +16,12 @@ function score.damageAdd()
 end
 
 function score.draw()
-	love.graphics.print("Kills : "..score.get(), 600, 50, 0, 2, 2)
-	love.graphics.print("Damage taken : "..score.damageTaken, 100, 50, 0, 2, 2)
+	love.graphics.print("Kills : "..score.get(), 500, 50, 0, 2, 2)
+	local health = 100 - score.damageTaken
+	if health < 0 then
+		health = 0
+	end
+	love.graphics.print("Health : "..health, 50, 50, 0, 2, 2)
 end
 
 return score
