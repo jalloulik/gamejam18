@@ -69,14 +69,17 @@ function love.draw()
 end
 
 function love.keypressed(key)
-	if (key == "escape") then
-		if scene == "game" then
-			scene = "menu"
-		else
-			scene = "game"
-		end
-	end
+	-- if (key == "escape") then
+	-- 	if scene == "game" then
+	-- 		scene = "menu"
+	-- 	else
+	-- 		scene = "game"
+	-- 	end
+	-- end
 	if (key == "f1") then
 		love.event.quit()
+	end
+	if (key == "f2") then
+		love.event.quit("restart")
 	end
 end

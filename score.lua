@@ -22,6 +22,7 @@ function score.draw()
 		health = 0
 	end
 	love.graphics.print("Health : "..health, 50, 50, 0, 2, 2)
+	love.graphics.print("F1 to quit, F2 to restart", 500, 10, 0, 1, 1)
 end
 
 return score
