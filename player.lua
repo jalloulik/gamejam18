@@ -123,7 +123,7 @@ end
 
 function player.runningAnimation(dt)
 	if (love.keyboard.isDown("d")) then
-		if (player.isFacing == RIGHT) then
+		if (player.isFacing == RIGHT and player.x < (720 - player.idle.width / 2)) then
 			player.x = player.x + (220 * dt)
 		end
 		if (player.isAttacking == false) then
@@ -131,7 +131,7 @@ function player.runningAnimation(dt)
 		end
 		player.isFacing = RIGHT
 	elseif (love.keyboard.isDown("a")) then
-		if (player.isFacing == LEFT) then
+		if (player.isFacing == LEFT and player.x > (player.idle.width / 2)) then
 			player.x = player.x - (220 * dt)
 		end
 		if (player.isAttacking == false) then
