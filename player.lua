@@ -97,6 +97,7 @@ function player.attackLaunch(dt)
 	end
 	if (love.keyboard.isDown("space") and player.isAlive and player.isAttacking == false and player.attackPermission) then
 		player.isAttacking = true
+		player.attackSound()
 		player.attackPermission = false
 	end
 	if (player.attackFrame >= #player.attack.img + 1) then

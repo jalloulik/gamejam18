@@ -1,6 +1,6 @@
 dev = {}
 dev.move = false
 dev.spawn = false
-dev.boxes = true
+dev.boxes = false
 
 return dev
