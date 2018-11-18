@@ -124,7 +124,7 @@ end
 function player.runningAnimation(dt)
 	if (love.keyboard.isDown("d")) then
 		if (player.isFacing == RIGHT) then
-			player.x = player.x + 3
+			player.x = player.x + (220 * dt)
 		end
 		if (player.isAttacking == false) then
 			player.isRunning = true
@@ -132,7 +132,7 @@ function player.runningAnimation(dt)
 		player.isFacing = RIGHT
 	elseif (love.keyboard.isDown("a")) then
 		if (player.isFacing == LEFT) then
-			player.x = player.x - 3
+			player.x = player.x - (220 * dt)
 		end
 		if (player.isAttacking == false) then
 			player.isRunning = true

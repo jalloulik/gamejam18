@@ -65,15 +65,15 @@ function monsters.kill(monster)
 	end
 end
 
-function monsters.move(monster)
+function monsters.move(dt, monster)
 	if (player.isAlive) then
 		if (math.abs(monster.x - player.x) > 20) then
 			monster.isRunning = true
 			if (monster.x > player.x) then
-				monster.x = monster.x - 1
+				monster.x = monster.x - (100 * dt)
 				monster.isFacing = 1
 			else
-				monster.x = monster.x + 1
+				monster.x = monster.x + (100 * dt)
 				monster.isFacing = -1
 			end
 		else
@@ -98,7 +98,7 @@ end
 
 function monsters.ia(dt, monster)
 	if (dev.move == false) then
-		monsters.move(monster)
+		monsters.move(dt, monster)
 	end
 	monsters.attack(dt, monster)
 end
