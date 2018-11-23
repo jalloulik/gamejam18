@@ -11,7 +11,7 @@ monsters.list = {}
 monsters.spawn = {}
 monsters.spawn.timer = 0
 monsters.spawn.speed = 5
-monsters.spawn.min = 100
+monsters.spawn.min = 0
 monsters.spawn.max = 700
 global_id = 0
 
